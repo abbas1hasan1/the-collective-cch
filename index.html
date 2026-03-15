@@ -61,6 +61,20 @@
       color: var(--text-light);
       border-bottom-color: rgba(238,237,234,0.3);
     }
+    .pill-glow {
+      border-bottom: none;
+      padding-bottom: 10px;
+      position: relative;
+    }
+    .pill-glow::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(65,57,54,0.2) 12%, rgba(65,57,54,0.4) 38%, rgba(65,57,54,0.18) 55%, rgba(65,57,54,0.35) 75%, rgba(65,57,54,0.15) 90%, transparent);
+      box-shadow: 0 0 10px 4px rgba(213,207,200,0.25), 0 0 35px 12px rgba(213,207,200,0.1);
+    }
 
     .btn {
       display: inline-flex; align-items: center; gap: 10px;
@@ -81,68 +95,136 @@
     /* Ensure all content sits above the body::before overlay */
     body > * { position: relative; z-index: 1; }
 
-    /* NAVBAR */
-    .navbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      background: var(--bg-dark); padding: 0 40px;
+    /* NAV BAR (scroll-reveal) */
+    .nav-bar {
+      position: fixed; top: 0; left: 0; right: 0; height: 72px;
+      background: var(--bg-dark); z-index: 999;
+      transform: translateY(-100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .navbar-inner {
-      max-width: 1280px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between; height: 72px;
+    body.is-scrolled .nav-bar { transform: translateY(0); }
+
+    /* HAMBURGER BUTTON */
+    .hamburger-btn {
+      position: fixed; top: 32px; right: 32px; z-index: 1000;
+      width: 32px; height: 32px; background: none; border: none;
+      cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 6px; padding: 0;
     }
-    .nav-logo svg {
-      width: 28px; height: 28px; fill: var(--text-light);
+    .hamburger-btn span {
+      display: block; width: 24px; height: 2px;
+      background: var(--accent-brown); border-radius: 1px;
+      transition: transform 0.3s ease, opacity 0.3s ease, background 0.4s ease;
     }
-    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
-    .nav-links a { color: var(--text-light); font-size: 15px; font-weight: 500; opacity: 0.85; transition: opacity 0.2s; }
-    .nav-links a:hover { opacity: 1; }
-    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
-    .hamburger span { display: block; width: 24px; height: 2px; background: var(--text-light); border-radius: 2px; }
-    .mobile-menu { display: none; }
+    body.is-scrolled .hamburger-btn span { background: var(--text-light); }
+    .hamburger-btn.is-open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .hamburger-btn.is-open span:nth-child(2) { opacity: 0; }
+    .hamburger-btn.is-open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+    /* NAV OVERLAY */
+    .nav-overlay {
+      position: fixed; inset: 0; z-index: 999;
+      background: var(--bg-page) url('blank background/concrete background.png') center / cover fixed;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 48px;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+    .nav-overlay::before {
+      content: ''; position: fixed; inset: 0;
+      pointer-events: none;
+      background: rgba(213,207,200,0.18);
+    }
+    .nav-overlay.is-open { opacity: 1; visibility: visible; }
+    .nav-overlay a {
+      position: relative; z-index: 1;
+      font-family: var(--font-primary);
+      font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--accent-brown);
+      transition: opacity 0.3s ease;
+    }
+    .nav-overlay a:hover { opacity: 0.75; }
+
+    /* GLOW UNDERLINE (nav links) */
+    .glow-underline {
+      border-bottom: none; padding-bottom: 10px; position: relative;
+    }
+    .glow-underline::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(65,57,54,0.2) 12%, rgba(65,57,54,0.4) 38%, rgba(65,57,54,0.18) 55%, rgba(65,57,54,0.35) 75%, rgba(65,57,54,0.15) 90%, transparent);
+      box-shadow: 0 0 10px 4px rgba(213,207,200,0.25), 0 0 35px 12px rgba(213,207,200,0.1);
+    }
+
+    /* CTA PILL LABEL */
+    .cta-pill-label {
+      display: inline-block; margin-top: 40px;
+      font-family: var(--font-primary);
+      font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--accent-brown);
+      transition: opacity 0.3s ease; cursor: pointer;
+    }
+    .cta-pill-label:hover { opacity: 0.75; }
 
     /* HERO */
     .hero {
-      margin-top: 72px; position: relative;
-      min-height: 90vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative;
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
       overflow: hidden;
     }
     .hero-content {
       position: relative; z-index: 1; text-align: center;
-      display: flex; flex-direction: column; align-items: center; gap: 24px;
+      display: flex; flex-direction: column; align-items: center;
       padding: 120px 40px;
     }
     .hero-logo {
-      width: 100%;
-    }
-    .hero-tagline {
-      font-size: 14px; font-weight: 500; letter-spacing: 4px; text-transform: uppercase;
-      color: rgba(26,25,23,0.45);
+      width: 115%; max-width: 700px;
     }
 
-    /* CONCEPT SECTION */
-    .concept-section { padding: 100px 40px; text-align: center; }
-    .concept-section .statement {
-      font-size: 30px; font-weight: 400; line-height: 42px; letter-spacing: -0.8px;
-      max-width: 780px; margin: 32px auto 0;
+    /* MENU OVERVIEW — Interactive Accordion Pillars */
+    /* MENU PILLARS — bordered transparent cards */
+    .menu-pillars { padding: 100px 40px; max-width: 1280px; margin: 0 auto; }
+    .menu-pillars-header { text-align: center; margin-bottom: 72px; }
+    .menu-pillars-header h2 {
+      font-family: var(--font-primary);
+      font-size: 44px; font-weight: 400; line-height: 52px; letter-spacing: -1.5px;
+      max-width: 700px; margin: 20px auto 0;
     }
-    .pillars-row {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
-      max-width: 1000px; margin: 60px auto 0; padding-top: 48px;
-      border-top: 1px solid var(--border-gray);
+    .pillar-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
     }
-    .pillar-item { text-align: center; }
-    .pillar-title { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 10px; }
-    .pillar-desc { font-size: 15px; color: rgba(26,25,23,0.5); line-height: 22px; }
+    .pillar-card {
+      border: 1px solid var(--border-gray); border-radius: 20px;
+      overflow: hidden; background: transparent;
+      transition: border-color 0.3s ease;
+    }
+    .pillar-card:hover { border-color: var(--accent-brown); }
+    .pillar-card-img { width: 100%; border-radius: 0; }
+    .pillar-card-body { padding: 32px 28px 36px; }
+    .pillar-label {
+      font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--accent-brown); margin-bottom: 14px;
+    }
+    .pillar-card-body h3 {
+      font-family: var(--font-primary);
+      font-size: 24px; font-weight: 500; line-height: 32px; letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+    .pillar-card-body p {
+      color: rgba(26,25,23,0.55); font-size: 15px; line-height: 25px;
+    }
+    .pillar-card-body p + p { margin-top: 12px; }
 
     /* OUR STORY SECTION (dark card) */
     .story-section { padding: 40px; }
     .story-card {
       background: var(--bg-dark); border-radius: 24px; padding: 80px 64px;
-      max-width: 1280px; margin: 0 auto;
+      max-width: 1280px; margin: 0 auto; text-align: center;
     }
     .story-card .pill-dark { margin-bottom: 32px; }
     .story-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start;
+      display: grid; grid-template-columns: 1fr; gap: 40px;
     }
     .story-lead {
       font-size: 28px; font-weight: 400; line-height: 38px; letter-spacing: -0.5px;
@@ -186,6 +268,30 @@
       max-width: 1280px; margin: 0 auto;
     }
 
+    /* ICON STRIP — Essentials category cards */
+    .icon-strip { padding: 0 0 80px; }
+    .icon-strip-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .icon-strip-card {
+      border: 1px solid var(--border-gray);
+      border-radius: 20px;
+      padding: 28px 24px 24px;
+      background: transparent;
+      text-align: center;
+      transition: border-color 0.3s ease;
+    }
+    .icon-strip-card:hover { border-color: var(--accent-brown); }
+    .icon-strip-icon { margin-bottom: 16px; }
+    .icon-strip-icon svg { width: 48px; height: 48px; }
+    .icon-strip-title {
+      font-family: var(--font-display);
+      font-size: 20px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-dark);
+    }
+
     /* RENDERING SECTIONS — Exterior + Interior */
     .rendering-section { padding: 60px 40px; }
     .rendering-section + .rendering-section { padding-top: 0; }
@@ -207,51 +313,104 @@
       width: 100%; border-radius: 20px;
     }
 
+    /* SECTION LABEL */
+    .section-label {
+      display: block; text-align: center; margin-bottom: 40px;
+      font-family: var(--font-primary);
+      font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--accent-brown);
+    }
+
+    /* SHARED TYPE STYLES */
+    .type-bebas {
+      font-family: var(--font-display); text-transform: uppercase; letter-spacing: 4px;
+      color: var(--text-light);
+    }
+    .type-lora {
+      font-family: var(--font-serif); font-style: normal; font-weight: 500;
+      color: var(--text-light); text-transform: uppercase;
+    }
+    .concept-para {
+      color: var(--text-muted); font-size: 17px; line-height: 28px;
+      max-width: 540px;
+    }
+
+    /* CONCEPT — EDITORIAL SPLIT */
+    .concept-section { padding: 80px 40px; }
+    .editorial-split {
+      max-width: 1280px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.2fr; gap: 0;
+      border-radius: 24px; overflow: hidden;
+      min-height: 560px;
+    }
+    .editorial-split-img { position: relative; }
+    .editorial-split-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+    .editorial-split-content {
+      background: var(--bg-dark);
+      padding: 60px 56px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .editorial-split-content .headline { margin-bottom: 8px; }
+    .editorial-split-content .headline .type-bebas {
+      font-size: clamp(42px, 5vw, 64px); line-height: 1;
+    }
+    .editorial-split-content .headline .type-lora {
+      font-size: clamp(38px, 4.5vw, 58px); line-height: 1;
+      display: block; margin-top: 4px;
+    }
+    .editorial-split-content .concept-para { margin-top: 24px; }
+    .editorial-split-content .section-label {
+      text-align: left; color: var(--text-muted); margin-bottom: 16px;
+    }
+
     /* SPACE SECTION */
     .space-section { padding: 100px 40px; }
-    .space-header { max-width: 650px; margin-bottom: 60px; }
-    .space-header h2 { margin: 20px 0 16px; }
-    .space-header p { color: rgba(26,25,23,0.55); margin-bottom: 28px; font-size: 17px; line-height: 26px; }
-    .space-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    .space-glow-card {
+      max-width: 1280px; margin: 0 auto; text-align: center;
+      padding: 0;
     }
-    .space-card {
-      background: var(--bg-dark); border-radius: 20px; padding: 40px 36px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
-      transition: opacity 0.3s ease;
+    .space-glow-card .pill-glow { margin-bottom: 24px; }
+    .space-glow-card h2 { margin: 16px 0 32px; color: var(--text-dark); }
+    .space-bento {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      position: relative; z-index: 1;
     }
-    .space-card:hover { opacity: 0.85; }
-    .space-card h3 { font-size: 24px; line-height: 30px; letter-spacing: -0.5px; margin-bottom: 14px; color: var(--text-light); }
-    .space-card p { color: var(--text-muted); line-height: 24px; font-size: 15px; }
+    .bento-cell {
+      perspective: 1000px; aspect-ratio: 4 / 3; cursor: pointer;
+    }
+    .bento-flip {
+      position: relative; width: 100%; height: 100%;
+      transform-style: preserve-3d; transition: transform 0.6s ease;
+    }
+    .bento-cell.flipped .bento-flip { transform: rotateY(180deg); }
+    .bento-front, .bento-back {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      background: var(--bg-card-dark); border: 1px solid rgba(238,237,234,0.08);
+      border-radius: 16px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 40px 36px;
+      overflow: hidden; transition: border-color 0.3s ease;
+    }
+    .bento-front::after, .bento-back::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(200,180,160,0.15) 50%, transparent 100%);
+    }
+    .bento-cell:hover .bento-front,
+    .bento-cell:hover .bento-back { border-color: rgba(238,237,234,0.15); }
+    .bento-back { transform: rotateY(180deg); }
+    .bento-icon { margin-bottom: 20px; }
+    .bento-icon svg { width: 64px; height: 64px; }
+    .bento-title {
+      font-family: var(--font-display); font-size: 22px; color: var(--text-light);
+      letter-spacing: 2px; text-transform: uppercase; line-height: 1; text-align: center;
+    }
+    .bento-desc {
+      color: var(--text-muted); font-size: 17px; line-height: 28px;
+      text-align: center; max-width: 320px;
+    }
 
-    /* MENU SECTION */
+    /* MENU SECTION (showcases) */
     .menu-section { padding: 100px 40px; }
-    .menu-header { max-width: 700px; margin-bottom: 50px; }
-    .menu-header h2 { margin: 20px 0 16px; }
-    .menu-header p { color: rgba(26,25,23,0.55); font-size: 17px; line-height: 26px; }
-    .menu-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-      max-width: 1280px; margin: 0 auto;
-    }
-    .menu-card {
-      background: var(--bg-dark); border-radius: 20px; padding: 36px 32px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
-      transition: opacity 0.3s ease;
-    }
-    .menu-card:hover { opacity: 0.85; }
-    .menu-card h4 { font-size: 20px; font-weight: 600; margin-bottom: 12px; letter-spacing: -0.3px; color: var(--text-light); }
-    .menu-card p { color: var(--text-muted); font-size: 15px; line-height: 23px; }
-    .menu-card-wide { grid-column: span 2; }
-    .menu-positioning {
-      max-width: 700px; margin: 48px auto 0; text-align: center;
-      color: rgba(26,25,23,0.45); font-size: 15px; line-height: 24px; font-style: italic;
-    }
-    .aov-note {
-      display: inline-block; margin-top: 20px;
-      padding: 10px 24px; border-radius: 100px;
-      background: rgba(65,57,54,0.06); font-style: normal;
-      font-size: 14px; font-weight: 600; letter-spacing: 0.5px; color: var(--accent-brown);
-    }
 
     /* PACKAGING SECTION */
     .packaging-section { padding: 40px; }
@@ -325,8 +484,9 @@
       display: grid; grid-template-columns: 1fr 1.1fr; gap: 60px; align-items: center;
     }
     .community-feature img {
-      width: 100%; border-radius: 16px;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.12);
+      width: 85%; border-radius: 20px;
+      mix-blend-mode: multiply;
+      margin: 0 auto;
     }
     .community-feature-text h3 { font-size: 32px; line-height: 40px; letter-spacing: -0.5px; margin-bottom: 20px; }
     .community-feature-text p { color: rgba(26,25,23,0.55); font-size: 17px; line-height: 28px; margin-bottom: 12px; }
@@ -360,9 +520,9 @@
       h2 { font-size: 38px; line-height: 44px; letter-spacing: -1px; }
       h3 { font-size: 32px; line-height: 38px; }
       .hero-logo { max-width: 620px; }
-      .space-grid { grid-template-columns: 1fr; }
-      .menu-grid { grid-template-columns: repeat(2, 1fr); }
-      .menu-card-wide { grid-column: span 1; }
+      .space-bento { gap: 12px; }
+      .bento-front, .bento-back { padding: 32px 28px; }
+      .pillar-grid { gap: 20px; }
       .packaging-card-inner { grid-template-columns: 1fr; }
       .packaging-card { padding: 48px 40px; }
       .why-card { grid-template-columns: 1fr; padding: 48px 40px; }
@@ -375,7 +535,7 @@
       .ourvision-beat:nth-child(even) { direction: ltr; }
       .ourvision-header h2 { font-size: 36px; line-height: 44px; }
       .rendering-inner, .rendering-inner.reverse { grid-template-columns: 1fr; }
-      .rendering-inner.reverse .rendering-text { order: 0; }
+      .rendering-inner.reverse .rendering-text { order: -1; }
       .rendering-text h2 { font-size: 36px; line-height: 44px; }
     }
     @media (max-width: 768px) {
@@ -383,22 +543,14 @@
       h2 { font-size: 32px; line-height: 38px; letter-spacing: -0.8px; }
       h3 { font-size: 26px; line-height: 32px; }
       .container { padding: 0; }
-      .navbar { padding: 0 20px; }
-      .nav-links { display: none; }
-      .hamburger { display: flex; }
-      .mobile-menu.active {
-        display: flex; flex-direction: column; position: fixed;
-        top: 72px; left: 0; right: 0; bottom: 0;
-        background: var(--bg-dark); padding: 32px 24px; gap: 24px; z-index: 999;
-      }
-      .mobile-menu a { color: var(--text-light); font-size: 24px; font-weight: 500; }
-      .hero { min-height: 70vh; }
-      .hero-content { padding: 80px 0 60px; }
-      .hero-logo { }
-      .hero-tagline { font-size: 12px; letter-spacing: 3px; }
-      .concept-section { padding: 60px 40px; }
-      .concept-section .statement { font-size: 22px; line-height: 32px; }
-      .pillars-row { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+      .nav-bar { height: 60px; }
+      .hamburger-btn { top: 20px; right: 20px; }
+      .nav-overlay { gap: 40px; }
+      .hero-content { padding: 100px 24px; }
+      .menu-pillars { padding: 60px 40px; }
+      .menu-pillars-header h2 { font-size: 32px; line-height: 38px; }
+      .pillar-grid { grid-template-columns: 1fr; gap: 20px; }
+      .pillar-card-body h3 { font-size: 22px; line-height: 30px; }
       .story-section { padding: 20px; }
       .story-card { padding: 40px 28px; }
       .story-grid { gap: 28px; }
@@ -413,10 +565,28 @@
       .rendering-section + .rendering-section { padding-top: 0; }
       .rendering-inner { gap: 32px; }
       .rendering-text h2 { font-size: 28px; line-height: 36px; }
-      .space-section { padding: 60px 40px; }
+      .concept-section { padding: 40px 20px; }
+      .editorial-split { grid-template-columns: 1fr; }
+      .editorial-split-img img { width: 100%; height: auto; object-fit: initial; }
+      .editorial-split-content { padding: 40px 28px; text-align: center; }
+      .editorial-split-content .section-label { text-align: center; }
+      .editorial-split-content .concept-para { margin: 20px auto 0; }
+      .editorial-split-content .headline .type-lora {
+        display: inline; margin-top: 0; font-size: 24px;
+      }
+      .editorial-split-content .headline .type-bebas {
+        display: inline; font-size: 26px;
+      }
+      .space-section { padding: 40px 20px; }
+      .space-glow-card { padding: 0 20px; }
+      .bento-cell { aspect-ratio: 1; overflow: hidden; border-radius: 16px; }
+      .bento-front, .bento-back { padding: 24px 20px; }
+      .bento-icon { margin-bottom: 14px; }
+      .bento-icon svg { width: 48px; height: 48px; }
+      .bento-title { font-size: 17px; letter-spacing: 1.5px; }
+      .bento-desc { font-size: 14px; line-height: 22px; }
+      .bento-back { overflow-y: auto; }
       .menu-section { padding: 60px 40px; }
-      .menu-grid { grid-template-columns: 1fr; }
-      .menu-card-wide { grid-column: span 1; }
       .menu-board-section { padding: 60px 40px; }
       .packaging-section { padding: 20px; }
       .packaging-card { padding: 40px 28px; }
@@ -431,133 +601,222 @@
       /* Center all sections on mobile */
       .rendering-text,
       .packaging-text,
-      .space-header,
-      .menu-header,
+      .menu-pillars-header,
+      .pillar-card-body,
       .community-feature-text,
       .ourvision-header,
       .ourvision-beat { text-align: center; }
 
       .rendering-text p { margin: 0 auto; }
       .pill { display: block; text-align: center; }
+
+      .icon-strip { padding: 0 16px 60px; }
+      .icon-strip-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+      .icon-strip-card { padding: 16px 10px 14px; }
     }
   </style>
 </head>
 <body>
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="navbar-inner">
-      <a href="#" class="nav-logo">
-        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M5 10h18v1h2.5a3.5 3.5 0 0 1 0 7H23v1c0 3.3-2.7 6-6 6H11c-3.3 0-6-2.7-6-6V10zm18 6h2.5a1.5 1.5 0 0 0 0-3H23v3zM4 27h20a1 1 0 1 1 0 2H4a1 1 0 1 1 0-2z"/></svg>
-      </a>
-      <ul class="nav-links">
-        <li><a href="#story">Our Story</a></li>
-        <li><a href="#vision">The Vision</a></li>
-        <li><a href="#concept">Concept</a></li>
-        <li><a href="#ourvision">Our Vision</a></li>
-        <li><a href="#space">The Space</a></li>
-        <li><a href="#menu">Menu</a></li>
-        <li><a href="#community">Community</a></li>
-      </ul>
-      <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.toggle('active')" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
+  <!-- NAV BAR (scroll-reveal background) -->
+  <div class="nav-bar"></div>
+
+  <!-- HAMBURGER BUTTON -->
+  <button class="hamburger-btn" id="navToggle" aria-label="Toggle navigation">
+    <span></span><span></span><span></span>
+  </button>
+
+  <!-- NAV OVERLAY -->
+  <nav class="nav-overlay" id="navOverlay">
+    <a href="#concept" class="nav-link glow-underline">The Concept</a>
+    <a href="#space" class="nav-link glow-underline">The Space</a>
+    <a href="#menu" class="nav-link glow-underline">The Menu</a>
+    <a href="#essentials" class="nav-link glow-underline">The Essentials</a>
+    <a href="#movement" class="nav-link glow-underline">The Movement</a>
   </nav>
-  <div class="mobile-menu">
-    <a href="#story" onclick="this.parentElement.classList.remove('active')">Our Story</a>
-    <a href="#vision" onclick="this.parentElement.classList.remove('active')">The Vision</a>
-    <a href="#concept" onclick="this.parentElement.classList.remove('active')">Concept</a>
-    <a href="#ourvision" onclick="this.parentElement.classList.remove('active')">Our Vision</a>
-    <a href="#space" onclick="this.parentElement.classList.remove('active')">The Space</a>
-    <a href="#menu" onclick="this.parentElement.classList.remove('active')">Menu</a>
-    <a href="#community" onclick="this.parentElement.classList.remove('active')">Community</a>
-  </div>
 
   <!-- HERO -->
   <section class="hero">
     <div class="hero-content">
       <img src="logos/the-collective-wordmark.png" alt="The Collective" class="hero-logo">
-      <div class="hero-tagline">Concept Proposal &mdash; CityCentre Houston</div>
+      <a href="#story" class="cta-pill-label glow-underline">Our Story</a>
     </div>
   </section>
 
-  <!-- OUR STORY -->
-  <section class="story-section" id="story">
-    <div class="story-card">
-      <span class="pill pill-dark">Our Story</span>
-      <div class="story-grid">
-        <div class="story-lead">
-          We&rsquo;ve been part of the <span class="serif-accent">CityCentre</span> community since 2015 &mdash; watching it evolve from a shopping destination into a lifestyle hub.
+  <!-- THE CONCEPT — Editorial Split -->
+  <section class="concept-section" id="concept">
+    <div class="editorial-split">
+      <div class="editorial-split-content">
+        <span class="section-label section-label-light">The Concept</span>
+        <div class="headline">
+          <span class="type-bebas">COFFEE. &nbsp;CULTURE. &nbsp;COLLECTIVE.</span>
         </div>
-        <div class="story-body">
-          <p>CityCentre attracts an active, health-conscious crowd &mdash; people flowing between Lifetime Fitness, Nike, Lululemon, Beyond Yoga, pilates studios, pickleball courts, and run clubs. We saw it every day. And we noticed something missing: there was nowhere to grab clean, quality fuel between workouts, meetings, and errands.</p>
-          <p>We come from the wellness and fitness industry &mdash; running studios, boot camps, pop-ups, and community events. We&rsquo;re also multi-unit operators with concepts currently running across Houston, so we understand what it takes to execute at scale. This isn&rsquo;t our first venture &mdash; it&rsquo;s the one we&rsquo;ve been building toward.</p>
-          <p>The realization was simple: this neighborhood doesn&rsquo;t need another coffee shop. It needs a fueling station designed for the pace and values of the people who live here.</p>
-        </div>
+        <p class="concept-para">Specialty coffee, warm bites, and protein-rich food with real carbs and substance, designed for on the go. A space built around what matters. Stone surfaces, natural light, and nothing unnecessary. From morning espresso to an evening reset, every detail serves the rhythm of your day.</p>
+      </div>
+      <div class="editorial-split-img">
+        <img src="renderings/final-exterior.PNG" alt="The Collective — Exterior Rendering">
       </div>
     </div>
   </section>
 
-  <!-- THE VISION — Exterior -->
-  <section class="rendering-section" id="vision">
-    <div class="rendering-inner">
-      <div class="rendering-text">
-        <span class="pill">The Vision</span>
-        <h2>Remove everything <span class="serif-accent">unnecessary.</span></h2>
-        <p>A cafe stripped to its essentials &mdash; quality fuel for active bodies, intentional space for focused minds, and a community built around doing fewer things better.</p>
-      </div>
-      <img src="renderings/final-exterior.PNG" alt="The Collective — Exterior Rendering" class="rendering-img">
-    </div>
-  </section>
-
-  <!-- THE VISION — Interior -->
+  <!-- THE CONCEPT — Interior -->
   <section class="rendering-section">
     <div class="rendering-inner reverse">
       <img src="renderings/final-interior.jpg" alt="The Collective — Interior Rendering" class="rendering-img">
       <div class="rendering-text">
-        <span class="pill">The Interior</span>
-        <h2>Warm, intentional, <span class="serif-accent">earned.</span></h2>
-        <p>Concrete bench seating, an arch doorway that frames the space, ambient lighting, and a clean menu board overhead. Every detail calibrated to feel elevated yet approachable.</p>
+        <h2>Every detail <span class="serif-accent">earns</span> its place.</h2>
+        <p>Warm light, natural textures, and open sight lines that let the space breathe. An arch doorway frames the room. A clean menu board sits overhead. Every surface is honest, every material grounded. Nothing extra, nothing competing for your attention. Just a space that moves with your day.</p>
       </div>
     </div>
   </section>
 
-  <!-- THE CONCEPT -->
-  <section class="concept-section" id="concept">
-    <span class="pill">The Concept</span>
-    <p class="statement">
-      A warm minimalist caf&eacute; built around quality-forward beverages, curated pastries, and community connection &mdash; designed to serve the morning-to-evening rhythm of <span class="serif-accent">CityCentre</span>.
-    </p>
-    <div class="pillars-row">
-      <div class="pillar-item">
-        <div class="pillar-title">Specialty Coffee</div>
-        <div class="pillar-desc">Third-wave espresso program with single-origin and seasonal blends</div>
-      </div>
-      <div class="pillar-item">
-        <div class="pillar-title">Curated Pastries</div>
-        <div class="pillar-desc">Rotating selection of croissants, danishes, and baked goods from local partners</div>
-      </div>
-      <div class="pillar-item">
-        <div class="pillar-title">Grab &amp; Go</div>
-        <div class="pillar-desc">Designed for the CityCentre pace &mdash; quick, elevated, effortless</div>
-      </div>
-      <div class="pillar-item">
-        <div class="pillar-title">Community Hub</div>
-        <div class="pillar-desc">Run clubs, wellness events, and activations on the CityCentre green</div>
+  <!-- THE SPACE -->
+  <section class="space-section" id="space">
+    <div class="container">
+      <div class="space-glow-card">
+        <span class="pill pill-glow">The Space</span>
+        <h2>Designed with <span class="serif-accent">intention</span></h2>
+        <div class="space-bento">
+          <div class="bento-cell" onclick="this.classList.toggle('flipped')">
+            <div class="bento-flip">
+              <div class="bento-front">
+                <div class="bento-icon"><svg viewBox="0 0 48 48" fill="none" stroke="rgba(213,207,200,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="32" height="32" rx="2"/><rect x="14" y="14" width="20" height="20" rx="1"/><circle cx="24" cy="24" r="3" fill="none" stroke="rgba(213,207,200,0.3)"/></svg></div>
+                <div class="bento-title">Warm Minimalism</div>
+              </div>
+              <div class="bento-back">
+                <div class="bento-desc">If it doesn't add value, it adds noise. Every material, every surface earned its place &mdash; nothing decorative, nothing excess. At night, warm lighting brings out the stone textures and makes the space glow.</div>
+              </div>
+            </div>
+          </div>
+          <div class="bento-cell" onclick="this.classList.toggle('flipped')">
+            <div class="bento-flip">
+              <div class="bento-front">
+                <div class="bento-icon"><svg viewBox="0 0 48 48" fill="none" stroke="rgba(213,207,200,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="24" r="12"/><circle cx="28" cy="24" r="12" stroke="rgba(213,207,200,0.25)"/><circle cx="24" cy="24" r="6" stroke="rgba(213,207,200,0.15)"/></svg></div>
+                <div class="bento-title">Matte Finishes</div>
+              </div>
+              <div class="bento-back">
+                <div class="bento-desc">Matte surfaces reduce light reflections, creating a calmer, less distracting environment. The space feels grounded, not glossy.</div>
+              </div>
+            </div>
+          </div>
+          <div class="bento-cell" onclick="this.classList.toggle('flipped')">
+            <div class="bento-flip">
+              <div class="bento-front">
+                <div class="bento-icon"><svg viewBox="0 0 48 48" fill="none" stroke="rgba(213,207,200,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 38 V18 A14 14 0 0 1 38 18 V38"/><line x1="10" y1="38" x2="38" y2="38"/><line x1="24" y1="38" x2="24" y2="26" stroke="rgba(213,207,200,0.25)"/></svg></div>
+                <div class="bento-title">Indoor-Outdoor Flow</div>
+              </div>
+              <div class="bento-back">
+                <div class="bento-desc">An open-door layout invites natural light and foot traffic. The boundary between inside and outside dissolves &mdash; easier to walk in, easier to linger.</div>
+              </div>
+            </div>
+          </div>
+          <div class="bento-cell" onclick="this.classList.toggle('flipped')">
+            <div class="bento-flip">
+              <div class="bento-front">
+                <div class="bento-icon"><svg viewBox="0 0 48 48" fill="none" stroke="rgba(213,207,200,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24 C12 16, 20 32, 28 24 S44 16, 48 24"/><path d="M4 30 C12 22, 20 38, 28 30 S44 22, 48 30" stroke="rgba(213,207,200,0.25)"/></svg></div>
+                <div class="bento-title">Concrete Continuity</div>
+              </div>
+              <div class="bento-back">
+                <div class="bento-desc">The same material underfoot on the CityCentre promenade continues inside. No hard line between out there and in here &mdash; one space, one community, one flow.</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- SECTION GLOW BREAKER -->
-  <div class="section-glow"></div>
+  <!-- THE MENU — Pillar Cards -->
+  <section class="menu-pillars" id="menu">
+    <div class="menu-pillars-header">
+      <span class="pill pill-glow">The Menu</span>
+      <h2>Quality-forward beverages, grab-and-go nourishment, and warm bites &mdash; designed for the morning-to-evening rhythm of <span class="serif-accent">CityCentre</span>.</h2>
+    </div>
+    <div class="pillar-grid">
+      <!-- Drinks -->
+      <div class="pillar-card">
+        <img src="menu/05-cold-brew-lineup.jpg" alt="The Collective — Cold Brew Lineup" class="pillar-card-img">
+        <div class="pillar-card-body">
+          <div class="pillar-label">Drinks</div>
+          <h3>The full beverage program — from espresso to cold brew <span class="serif-accent">on tap</span></h3>
+          <p>Espresso is the foundation — lattes, cortados, pour-overs — alongside signature drinks like matcha lattes and functional beverages. Designed for the third-wave coffee drinker and the non-coffee crowd alike.</p>
+          <p>Cold brew on tap means zero friction for the active customer. Low-acid, high-caffeine, pairs with every lifestyle moment. The same lineup in branded cans — every can that leaves extends the brand into CityCentre.</p>
+        </div>
+      </div>
+      <!-- Snacks -->
+      <div class="pillar-card">
+        <img src="menu/01-collective-cups.jpg" alt="The Collective — Collective Cups" class="pillar-card-img">
+        <div class="pillar-card-body">
+          <div class="pillar-label">Snacks</div>
+          <h3>Grab-and-go nourishment, anchored by <span class="serif-accent">Collective Cups</span></h3>
+          <p>The signature concept — you literally <em>collect</em> your cup. Fresh fruit, vegetables, nuts, protein combos. The name ties directly to the brand.</p>
+          <p>Portioned for the rhythm — enough to bridge workouts and meetings without the heaviness of a full plate. Oatmeals, overnight oats, power muffins, and rotating local pastries fill out the nourishment station.</p>
+        </div>
+      </div>
+      <!-- Paninis -->
+      <div class="pillar-card">
+        <img src="menu/10-panini-egg-cheese.jpg" alt="The Collective — Pressed Paninis" class="pillar-card-img">
+        <div class="pillar-card-body">
+          <div class="pillar-label">Paninis</div>
+          <h3>The only made-to-order item, <span class="serif-accent">sealed</span> for the move</h3>
+          <p>Pressed format is deliberate — seals ingredients in, clean portable shape, no mess. Egg white, turkey, avocado mornings; savory builds for lunch.</p>
+          <p>One warm made-to-order item keeps the line moving while everything else stays grab-and-go. Warm and satisfying without slowing down the flow.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <!-- OUR VISION -->
-  <section class="ourvision-section" id="ourvision">
+  <!-- THE ESSENTIALS -->
+  <section class="ourvision-section" id="essentials">
     <div class="ourvision-inner">
       <div class="ourvision-header">
-        <span class="pill">Our Vision</span>
+        <span class="pill pill-glow">The Essentials</span>
         <h2>Not a coffee shop. A daily ritual for people who move with <span class="serif-accent">intention</span>.</h2>
       </div>
+
+      <!-- ICON CARDS -->
+      <section class="icon-strip">
+        <div class="icon-strip-grid">
+          <!-- Breakfast -->
+          <div class="icon-strip-card">
+            <div class="icon-strip-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="var(--accent-brown)" stroke-width="2" stroke-linecap="round">
+                <circle cx="24" cy="24" r="9"/>
+                <line x1="24" y1="7" x2="24" y2="12"/>
+                <line x1="24" y1="36" x2="24" y2="41"/>
+                <line x1="7" y1="24" x2="12" y2="24"/>
+                <line x1="36" y1="24" x2="41" y2="24"/>
+                <line x1="12" y1="12" x2="15.5" y2="15.5"/>
+                <line x1="32.5" y1="32.5" x2="36" y2="36"/>
+                <line x1="12" y1="36" x2="15.5" y2="32.5"/>
+                <line x1="32.5" y1="15.5" x2="36" y2="12"/>
+              </svg>
+            </div>
+            <div class="icon-strip-title">Breakfast</div>
+          </div>
+          <!-- On The Go -->
+          <div class="icon-strip-card">
+            <div class="icon-strip-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="var(--accent-brown)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="10" y1="24" x2="38" y2="24"/>
+                <polyline points="28,14 38,24 28,34"/>
+              </svg>
+            </div>
+            <div class="icon-strip-title">On The Go</div>
+          </div>
+          <!-- Savory -->
+          <div class="icon-strip-card">
+            <div class="icon-strip-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="var(--accent-brown)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M38 26.3A14 14 0 1 1 21.7 10 11 11 0 0 0 38 26.3z"/>
+              </svg>
+            </div>
+            <div class="icon-strip-title">Savory</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-glow" style="margin-bottom: 80px;"></div>
+
       <div class="ourvision-beats">
         <div class="ourvision-beat">
           <div class="beat-statement">The essentials aren&rsquo;t a restriction &mdash; they&rsquo;re a <span class="serif-accent">discipline</span>.</div>
@@ -566,7 +825,7 @@
         <hr class="beat-divider">
         <div class="ourvision-beat">
           <div class="beat-statement">The menu is designed around how CityCentre <span class="serif-accent">moves</span>.</div>
-          <div class="beat-body">High-protein, high-carb, low-fat fuel for people going from gym to office to errands. Not indulgence for its own sake &mdash; nourishment that fits the rhythm. Every ingredient chosen with purpose: egg white paninis, overnight oats, power muffins, cold brew on tap. Food that respects how you spend your day.</div>
+          <div class="beat-body">High-protein, high-carb nourishment for people going from gym to office to errands. Not indulgence for its own sake &mdash; nourishment that fits the rhythm. Every ingredient chosen with purpose: egg white paninis, overnight oats, power muffins, cold brew on tap. Food that respects how you spend your day.</div>
         </div>
         <hr class="beat-divider">
         <div class="ourvision-beat">
@@ -574,104 +833,6 @@
           <div class="beat-body">The grab &amp; go station, the panini press, the Collective Cups &mdash; all designed for speed without sacrificing substance. Nothing is decorative. Nothing is filler. From the menu board overhead to the bench seating at the window, everything exists because someone will use it, every single day.</div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- THE SPACE -->
-  <section class="space-section" id="space">
-    <div class="container">
-      <div class="space-header">
-        <span class="pill">The Space</span>
-        <h2>Designed with <span class="serif-accent">intention</span></h2>
-        <p>Warm minimalist concrete aesthetic &mdash; concrete counters, arch doorways, ambient lighting, and living plants. Every detail calibrated to feel elevated yet approachable.</p>
-      </div>
-      <div class="space-grid">
-        <div class="space-card">
-          <h3>The Storefront</h3>
-          <p>Clean signage, dark planters, and a welcoming awning create immediate curb appeal on Town &amp; Country. Outdoor two-tops capture foot traffic from the CityCentre promenade and parking corridor, turning passersby into regulars.</p>
-        </div>
-        <div class="space-card">
-          <h3>The Interior</h3>
-          <p>Concrete bench seating, a warm counter experience with bar stools, a clean menu board overhead, and a grab-and-go fridge for bottled cold brew and pre-packaged snacks. The arch doorway frames the space and creates an inviting flow.</p>
-        </div>
-        <div class="space-card">
-          <h3>The Details</h3>
-          <p>1,113 SF of efficient, purpose-built space &mdash; 60' of depth delivering a layout that maximizes both guest experience and operational throughput. A flexible footprint ready for morning rush, afternoon remote workers, and evening dessert-and-coffee service.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- THE MENU -->
-  <section class="menu-section" id="menu">
-    <div class="container">
-      <div class="menu-header">
-        <span class="pill">The Menu</span>
-        <h2>Quality-forward, <span class="serif-accent">curated</span> for pace</h2>
-        <p>Grab-and-go focused with paninis as the sole savory offering. Everything else is pick-up-and-go &mdash; crafted for speed without sacrificing quality.</p>
-      </div>
-      <div class="menu-grid">
-        <div class="menu-card">
-          <h4>Espresso Bar</h4>
-          <p>Lattes, cortados, americanos, single-origin pour-overs, and seasonal specials. The foundation of our program &mdash; every shot pulled with precision.</p>
-        </div>
-        <div class="menu-card">
-          <h4>Signature Drinks</h4>
-          <p>Matcha lattes, functional beverages, cold brews, and specialty iced drinks. Designed to photograph as well as they taste.</p>
-        </div>
-        <div class="menu-card">
-          <h4>Pastries &amp; Bakery</h4>
-          <p>Croissants, danishes, protein muffins, banana oat bars, and cookies &mdash; rotating daily from local bakery partners. Fresh every morning, with macro-conscious options built into the rotation.</p>
-        </div>
-        <div class="menu-card">
-          <h4>Paninis</h4>
-          <p>Our signature savory &mdash; pressed sandwiches with premium ingredients, sealed into a clean, portable shape. No mess, no falling ingredients. A warm, satisfying meal designed for people on the move. Breakfast paninis for the morning crowd &mdash; egg white, turkey, avocado &mdash; and savory builds for lunch.</p>
-        </div>
-        <div class="menu-card menu-card-wide">
-          <h4>Grab &amp; Go</h4>
-          <p>The Collective&rsquo;s fueling station. High-protein, high-carb, low-fat options built for active lifestyles: overnight oats, banana bread, power muffins, and Collective Cups &mdash; curated assortments of fresh fruit, cheese, vegetables, and bakery bites. Grab it between workouts, meetings, or errands.</p>
-        </div>
-      </div>
-      <div class="menu-positioning">
-        Every item earned its place on the board. Nothing filler &mdash; just fuel, crafted for how CityCentre moves.
-        <br><span class="aov-note">$14&ndash;28 Average Ticket</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- MENU SHOWCASE: Canned Cold Brew -->
-  <section class="rendering-section">
-    <div class="rendering-inner">
-      <div class="rendering-text">
-        <span class="pill">On The Go</span>
-        <h2>Take it with <span class="serif-accent">you.</span></h2>
-        <p>The same signature cold brews, sealed in branded cans for grab-and-go convenience. Designed to look good on a desk, in a gym bag, or on an Instagram story. Portable fuel that carries the brand beyond the cafe walls.</p>
-      </div>
-      <img src="menu/06-canned-cold-brew.jpg" alt="The Collective — Canned Cold Brew" class="rendering-img">
-    </div>
-  </section>
-
-  <!-- MENU SHOWCASE: Breakfast Toast -->
-  <section class="rendering-section">
-    <div class="rendering-inner reverse">
-      <img src="menu/08-toast-breakfast.jpg" alt="The Collective — Breakfast Toast" class="rendering-img">
-      <div class="rendering-text">
-        <span class="pill">Breakfast</span>
-        <h2>Morning fuel, <span class="serif-accent">elevated.</span></h2>
-        <p>Artisan toast builds &mdash; breakfast, apple, berry &mdash; designed to be clean, portable, and satisfying. High-carb, high-protein starts built for people heading from the gym to the office.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- MENU SHOWCASE: Paninis -->
-  <section class="rendering-section">
-    <div class="rendering-inner">
-      <div class="rendering-text">
-        <span class="pill">Savory</span>
-        <h2>Pressed. Sealed. <span class="serif-accent">Gone.</span></h2>
-        <p>Premium pressed sandwiches &mdash; egg, cheese, turkey, avocado &mdash; sealed into a clean, portable shape. No mess, no falling ingredients. A warm, satisfying meal designed for people on the move.</p>
-      </div>
-      <img src="menu/10-panini-egg-cheese.jpg" alt="The Collective — Paninis" class="rendering-img">
     </div>
   </section>
 
@@ -701,34 +862,8 @@
     </div>
   </section>
 
-  <!-- WHY CITYCENTRE -->
-  <section class="why-section" id="why">
-    <div class="why-card">
-      <div class="why-col">
-        <span class="pill pill-dark">Why CityCentre</span>
-        <h3>Proven demand. We elevate the <span class="serif-accent">experience</span>.</h3>
-        <ul>
-          <li>Premium coffee demand at this location is well-established &mdash; the category has consistently performed here</li>
-          <li>CityCentre&rsquo;s tenant mix has no specialty caf&eacute; offering quality-forward coffee paired with health-conscious food</li>
-          <li>The wellness ecosystem &mdash; Lifetime Fitness, Beyond Yoga, Lululemon, Nike, pilates studios, run clubs &mdash; creates daily demand for clean fuel with nowhere to find it</li>
-          <li>The Collective fills the white space between casual chain coffee and full-service dining</li>
-        </ul>
-      </div>
-      <div class="why-col">
-        <h3>CityCentre's community is <span class="serif-accent">our</span> community.</h3>
-        <ul>
-          <li>Same demographic as Lululemon, Alo, Beyond Yoga, Nike, and Lifetime Fitness</li>
-          <li>Health-conscious, active, affluent professionals &mdash; the exact customer who seeks out specialty coffee</li>
-          <li>Remote workers seeking a "third place" between home and office</li>
-          <li>After-dinner dessert + coffee crowd currently underserved in the tenant mix</li>
-          <li>4.6M annual visitors, 247K daytime population, 2nd highest-earning zip code in Houston</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- COMMUNITY VISION -->
-  <section class="community-section" id="community">
+  <!-- THE MOVEMENT — Community -->
+  <section class="community-section" id="movement">
     <div class="community-header">
       <h2>More than a caf&eacute; &mdash; a <span class="serif-accent">community</span> anchor</h2>
     </div>
@@ -737,7 +872,7 @@
       <div class="community-feature-text">
         <h3>Coffee. Culture. <span class="serif-accent">Collective.</span></h3>
         <p>More than a tagline &mdash; it's the ethos behind everything we do. The Collective is built to be a gathering point for the CityCentre community: a place where morning routines, afternoon work sessions, and evening connections all feel intentional.</p>
-        <p>From run clubs on the green to seasonal activations and local artist features, we're designing a caf&eacute; that gives back to the neighborhood that fuels it.</p>
+        <p>From run clubs on the green to seasonal activations and local artist features, we're designing a caf&eacute; that gives back to the neighborhood that inspires it.</p>
       </div>
     </div>
     <div class="community-grid">
@@ -756,5 +891,70 @@
     </div>
   </section>
 
+  <!-- OUR STORY (THE FOUNDERS) -->
+  <section class="story-section" id="story">
+    <div class="story-card">
+      <span class="pill pill-dark">Our Story</span>
+      <div class="story-grid">
+        <div class="story-lead">
+          We&rsquo;ve been part of the <span class="serif-accent">CityCentre</span> community since 2015, watching it evolve into the lifestyle hub it is today.
+        </div>
+        <div class="story-body">
+          <p>CityCentre attracts an active, health-conscious crowd. People flowing between Lifetime Fitness, Nike, Lululemon, Beyond Yoga, pilates studios, pickleball courts, and run clubs. We saw it every day. And we noticed something missing: there was nowhere to grab clean, quality nourishment between workouts, meetings, and errands.</p>
+          <p>We come from the wellness and fitness industry. Running studios, boot camps, pop-ups, and community events. We&rsquo;re also multi-unit operators with concepts currently running across Houston, so we understand what it takes to execute at scale. This isn&rsquo;t our first venture. It&rsquo;s the one we&rsquo;ve been building toward.</p>
+          <p>The realization was simple: this neighborhood is ready for something new. A nourishment station designed for the pace and values of the people who live here.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CITYCENTRE -->
+  <section class="why-section">
+    <div class="why-card">
+      <div class="why-col">
+        <span class="pill pill-dark">Why CityCentre</span>
+        <h3>Proven demand. We elevate the <span class="serif-accent">experience</span>.</h3>
+        <ul>
+          <li>Premium coffee demand at this location is well-established &mdash; the category has consistently performed here</li>
+          <li>CityCentre&rsquo;s tenant mix has no specialty caf&eacute; offering quality-forward coffee paired with health-conscious food</li>
+          <li>The wellness ecosystem &mdash; Lifetime Fitness, Beyond Yoga, Lululemon, Nike, pilates studios, run clubs &mdash; creates daily demand for clean nourishment with nowhere to find it</li>
+          <li>The Collective fills the white space between casual chain coffee and full-service dining</li>
+        </ul>
+      </div>
+      <div class="why-col">
+        <h3>CityCentre's community is <span class="serif-accent">our</span> community.</h3>
+        <ul>
+          <li>Same demographic as Lululemon, Alo, Beyond Yoga, Nike, and Lifetime Fitness</li>
+          <li>Health-conscious, active, affluent professionals &mdash; the exact customer who seeks out specialty coffee</li>
+          <li>Remote workers seeking a "third place" between home and office</li>
+          <li>After-dinner dessert + coffee crowd currently underserved in the tenant mix</li>
+          <li>4.6M annual visitors, 247K daytime population, 2nd highest-earning zip code in Houston</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Nav overlay toggle
+    const navToggle = document.getElementById('navToggle');
+    const navOverlay = document.getElementById('navOverlay');
+
+    navToggle.addEventListener('click', () => {
+      navToggle.classList.toggle('is-open');
+      navOverlay.classList.toggle('is-open');
+    });
+
+    navOverlay.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        navToggle.classList.remove('is-open');
+        navOverlay.classList.remove('is-open');
+      });
+    });
+
+    // Scroll-reveal navbar
+    window.addEventListener('scroll', () => {
+      document.body.classList.toggle('is-scrolled', window.scrollY > 80);
+    });
+  </script>
 </body>
 </html>

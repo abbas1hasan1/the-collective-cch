@@ -540,6 +540,15 @@
       .rendering-text h2 { font-size: 36px; line-height: 44px; }
     }
     @media (max-width: 768px) {
+      body {
+        background: var(--bg-page);
+      }
+      body::after {
+        content: '';
+        position: fixed; inset: 0; z-index: -1;
+        background: url('blank background/concrete background.png') center / cover no-repeat;
+        pointer-events: none;
+      }
       h1 { font-size: 40px; line-height: 46px; letter-spacing: 1px; }
       h2 { font-size: 32px; line-height: 38px; letter-spacing: -0.8px; }
       h3 { font-size: 26px; line-height: 32px; }

@@ -25,7 +25,7 @@
       --font-serif:    'Lora', serif;
     }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; background: var(--bg-page); }
     body {
       font-family: var(--font-primary);
       background: var(--bg-page) url('blank background/concrete background.png') center / cover fixed;
@@ -33,6 +33,7 @@
       font-size: 16px; font-weight: 500; line-height: 22.4px;
       -webkit-font-smoothing: antialiased;
       position: relative;
+      min-height: 100vh;
     }
     /* Warm tint overlay on concrete */
     body::before {

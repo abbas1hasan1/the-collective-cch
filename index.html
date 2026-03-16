@@ -28,12 +28,21 @@
     html { scroll-behavior: smooth; background: var(--bg-page); }
     body {
       font-family: var(--font-primary);
-      background: var(--bg-page) url('blank background/concrete background.png') center / cover fixed;
+      background: transparent;
       color: var(--text-dark);
       font-size: 16px; font-weight: 500; line-height: 22.4px;
       -webkit-font-smoothing: antialiased;
       position: relative;
       min-height: 100vh;
+    }
+    /* Procedural concrete noise layer */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: -1;
+      pointer-events: none;
+      background: var(--bg-page);
+      filter: url(#concreteNoise);
+      opacity: 0.6;
     }
     /* Warm tint overlay on concrete */
     body::before {
@@ -125,7 +134,7 @@
     /* NAV OVERLAY */
     .nav-overlay {
       position: fixed; inset: 0; z-index: 999;
-      background: var(--bg-page) url('blank background/concrete background.png') center / cover fixed;
+      background: var(--bg-page);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 48px;
       opacity: 0; visibility: hidden;
@@ -451,6 +460,9 @@
     .menu-board-header p { color: rgba(26,25,23,0.55); font-size: 17px; line-height: 28px; }
     .menu-board-img {
       width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      display: block;
       border-radius: 20px;
       box-shadow: 0 24px 64px rgba(0,0,0,0.12);
     }
@@ -541,15 +553,6 @@
       .rendering-text h2 { font-size: 36px; line-height: 44px; }
     }
     @media (max-width: 768px) {
-      body {
-        background: var(--bg-page);
-      }
-      body::after {
-        content: '';
-        position: fixed; inset: 0; z-index: -1;
-        background: url('blank background/concrete background.png') center / cover no-repeat;
-        pointer-events: none;
-      }
       h1 { font-size: 40px; line-height: 46px; letter-spacing: 1px; }
       h2 { font-size: 32px; line-height: 38px; letter-spacing: -0.8px; }
       h3 { font-size: 26px; line-height: 32px; }
@@ -628,6 +631,17 @@
   </style>
 </head>
 <body>
+<svg style="position:absolute;width:0;height:0" aria-hidden="true">
+  <filter id="concreteNoise">
+    <feTurbulence type="fractalNoise" baseFrequency="0.45" numOctaves="6" stitchTiles="stitch" result="noise"/>
+    <feColorMatrix type="saturate" values="0" in="noise" result="gray"/>
+    <feComponentTransfer in="gray" result="contrast">
+      <feFuncR type="linear" slope="3" intercept="-0.9"/>
+      <feFuncG type="linear" slope="3" intercept="-0.9"/>
+      <feFuncB type="linear" slope="3" intercept="-0.9"/>
+    </feComponentTransfer>
+  </filter>
+</svg>
   <!-- NAV BAR (scroll-reveal background) -->
   <div class="nav-bar"></div>
 
@@ -845,18 +859,6 @@
     </div>
   </section>
 
-  <!-- MENU BOARD -->
-  <section class="menu-board-section">
-    <div class="container">
-      <div class="menu-board-header">
-        <span class="pill">The Menu Board</span>
-        <h2>Clean, visible, <span class="serif-accent">effortless.</span></h2>
-        <p>An overhead menu board designed for clarity and speed. Guests see every option at a glance &mdash; no scrolling, no guessing.</p>
-      </div>
-      <img src="packaging/menu.png" alt="The Collective — Menu Board" class="menu-board-img">
-    </div>
-  </section>
-
   <!-- PACKAGING / BRAND -->
   <section class="packaging-section">
     <div class="packaging-card">
@@ -868,6 +870,18 @@
         </div>
         <img src="packaging/71C3A1DC-B09A-4E1A-B6D5-262FCDC65127.png" alt="The Collective — Matte Black Packaging" class="packaging-img">
       </div>
+    </div>
+  </section>
+
+  <!-- MENU BOARD -->
+  <section class="menu-board-section">
+    <div class="container">
+      <div class="menu-board-header">
+        <span class="pill">The Menu Board</span>
+        <h2>Clean, visible, <span class="serif-accent">effortless.</span></h2>
+        <p>An overhead menu board designed for clarity and speed. Guests see every option at a glance &mdash; no scrolling, no guessing.</p>
+      </div>
+      <img src="packaging/menu.png" alt="The Collective — Menu Board" class="menu-board-img">
     </div>
   </section>
 

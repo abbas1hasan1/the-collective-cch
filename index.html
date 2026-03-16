@@ -145,6 +145,13 @@
       pointer-events: none;
       background: rgba(213,207,200,0.18);
     }
+    .nav-overlay::after {
+      content: ''; position: fixed; inset: 0;
+      pointer-events: none;
+      background: var(--bg-page);
+      filter: url(#concreteNoise);
+      opacity: 0.6;
+    }
     .nav-overlay.is-open { opacity: 1; visibility: visible; }
     .nav-overlay a {
       position: relative; z-index: 1;
@@ -468,25 +475,34 @@
     }
 
     /* WHY CITYCENTRE (dark card) */
-    .why-section { padding: 40px; }
+    .why-section { padding: 40px; text-align: center; }
     .why-card {
       background: var(--bg-dark); border-radius: 24px; padding: 72px 64px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start;
+      display: flex; flex-direction: column; gap: 48px; align-items: center;
       max-width: 1280px; margin: 0 auto;
     }
-    .why-card .pill-dark { margin-bottom: 28px; }
-    .why-col h3 { font-size: 26px; font-weight: 600; line-height: 34px; letter-spacing: -0.5px; color: var(--text-light); margin-bottom: 24px; }
-    .why-col ul {
-      list-style: none; display: flex; flex-direction: column; gap: 16px;
+    .why-card .pill-dark { margin-bottom: 12px; }
+    .why-col { max-width: 800px; }
+    .why-col h3 { font-family: var(--font-primary); font-size: 40px; font-weight: 400; line-height: 48px; letter-spacing: -1.5px; color: var(--text-light); margin-bottom: 32px; }
+    .why-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      margin-bottom: 28px;
     }
-    .why-col li {
-      color: var(--text-muted); font-size: 16px; line-height: 26px;
-      padding-left: 20px; position: relative;
+    .why-stat {
+      border: 1px solid var(--border-gray); border-radius: 16px;
+      padding: 24px 20px; text-align: center;
     }
-    .why-col li::before {
-      content: ''; position: absolute; left: 0; top: 10px;
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--accent-brown);
+    .why-stat .stat-number {
+      font-family: var(--font-primary); font-size: 36px; line-height: 1;
+      color: var(--text-light); margin-bottom: 6px;
+    }
+    .why-stat .stat-label {
+      font-family: var(--font-body); font-size: 13px; line-height: 18px;
+      color: var(--text-muted);
+    }
+    .why-body {
+      color: var(--text-muted); font-size: 15px; line-height: 24px;
+      max-width: 640px; margin: 0 auto;
     }
 
     /* COMMUNITY SECTION */
@@ -539,7 +555,7 @@
       .pillar-grid { gap: 20px; }
       .packaging-card-inner { grid-template-columns: 1fr; }
       .packaging-card { padding: 48px 40px; }
-      .why-card { grid-template-columns: 1fr; padding: 48px 40px; }
+      .why-card { padding: 48px 40px; }
       .community-feature { grid-template-columns: 1fr; }
       .community-grid { grid-template-columns: 1fr; }
       .story-grid { grid-template-columns: 1fr; }
@@ -593,12 +609,12 @@
       }
       .space-section { padding: 40px 20px; }
       .space-glow-card { padding: 0 20px; }
-      .bento-cell { aspect-ratio: 1; overflow: hidden; border-radius: 16px; }
-      .bento-front, .bento-back { padding: 24px 20px; }
+      .bento-cell { aspect-ratio: 4 / 5; overflow: hidden; border-radius: 16px; }
+      .bento-front, .bento-back { padding: 20px 16px; }
       .bento-icon { margin-bottom: 14px; }
       .bento-icon svg { width: 48px; height: 48px; }
       .bento-title { font-size: 17px; letter-spacing: 1.5px; }
-      .bento-desc { font-size: 14px; line-height: 22px; }
+      .bento-desc { font-size: 13px; line-height: 20px; }
       .bento-back { overflow-y: auto; }
       .menu-section { padding: 60px 40px; }
       .menu-board-section { padding: 60px 40px; }
@@ -606,7 +622,7 @@
       .packaging-card { padding: 40px 28px; }
       .why-section { padding: 20px; }
       .why-card { padding: 36px 28px; gap: 32px; }
-      .why-col h3 { font-size: 22px; line-height: 30px; }
+      .why-col h3 { font-size: 28px; line-height: 36px; }
       .community-section { padding: 60px 40px; }
       .community-header h2 { font-size: 28px; }
       .community-feature { gap: 32px; }
@@ -619,7 +635,14 @@
       .pillar-card-body,
       .community-feature-text,
       .ourvision-header,
-      .ourvision-beat { text-align: center; }
+      .ourvision-beat,
+      .why-col { text-align: center; }
+      .why-stats { grid-template-columns: repeat(2, 1fr); }
+      .why-stat:last-child:nth-child(odd) { grid-column: 1 / -1; max-width: 50%; justify-self: center; }
+      .why-stat { padding: 20px 16px; }
+      .why-stat .stat-number { font-size: 22px; }
+      .why-stat .stat-label { font-size: 11px; line-height: 16px; }
+      .why-body { font-size: 14px; line-height: 22px; }
 
       .rendering-text p { margin: 0 auto; }
       .pill { display: block; text-align: center; }
@@ -708,7 +731,7 @@
                 <div class="bento-title">Warm Minimalism</div>
               </div>
               <div class="bento-back">
-                <div class="bento-desc">If it doesn't add value, it adds noise. Every material, every surface earned its place &mdash; nothing decorative, nothing excess. At night, warm lighting brings out the stone textures and makes the space glow.</div>
+                <div class="bento-desc">Every material earned its place &mdash; nothing decorative, nothing excess. Warm lighting brings out the stone textures at night.</div>
               </div>
             </div>
           </div>
@@ -730,7 +753,7 @@
                 <div class="bento-title">Indoor-Outdoor Flow</div>
               </div>
               <div class="bento-back">
-                <div class="bento-desc">An open-door layout invites natural light and foot traffic. The boundary between inside and outside dissolves &mdash; easier to walk in, easier to linger.</div>
+                <div class="bento-desc">An open-door layout invites natural light and foot traffic. Inside and outside dissolve into one &mdash; easier to walk in, easier to linger.</div>
               </div>
             </div>
           </div>
@@ -741,7 +764,7 @@
                 <div class="bento-title">Concrete Continuity</div>
               </div>
               <div class="bento-back">
-                <div class="bento-desc">The same material underfoot on the CityCentre promenade continues inside. No hard line between out there and in here &mdash; one space, one community, one flow.</div>
+                <div class="bento-desc">The CityCentre promenade material continues inside. No hard line between out there and in here &mdash; one flow.</div>
               </div>
             </div>
           </div>
@@ -763,8 +786,7 @@
         <div class="pillar-card-body">
           <div class="pillar-label">Drinks</div>
           <h3>The full beverage program — from espresso to cold brew <span class="serif-accent">on tap</span></h3>
-          <p>Espresso is the foundation — lattes, cortados, pour-overs — alongside signature drinks like matcha lattes and functional beverages. Designed for the third-wave coffee drinker and the non-coffee crowd alike.</p>
-          <p>Cold brew on tap means zero friction for the active customer. Low-acid, high-caffeine, pairs with every lifestyle moment. The same lineup in branded cans — every can that leaves extends the brand into CityCentre.</p>
+          <p>Espresso is the foundation — lattes, cortados, pour-overs — alongside signature drinks like matcha lattes and functional beverages. Cold brew on tap means zero friction: low-acid, high-caffeine, available in branded cans that extend the brand into CityCentre.</p>
         </div>
       </div>
       <!-- Snacks -->
@@ -773,8 +795,7 @@
         <div class="pillar-card-body">
           <div class="pillar-label">Snacks</div>
           <h3>Grab-and-go nourishment, anchored by <span class="serif-accent">Collective Cups</span></h3>
-          <p>The signature concept — you literally <em>collect</em> your cup. Fresh fruit, vegetables, nuts, protein combos. The name ties directly to the brand.</p>
-          <p>Portioned for the rhythm — enough to bridge workouts and meetings without the heaviness of a full plate. Oatmeals, overnight oats, power muffins, and rotating local pastries fill out the nourishment station.</p>
+          <p>The signature concept — you literally <em>collect</em> your cup. Fresh fruit, vegetables, nuts, protein combos portioned to bridge workouts and meetings. Oatmeals, overnight oats, power muffins, and rotating local pastries round out the nourishment station.</p>
         </div>
       </div>
       <!-- Paninis -->
@@ -783,8 +804,7 @@
         <div class="pillar-card-body">
           <div class="pillar-label">Paninis</div>
           <h3>The only made-to-order item, <span class="serif-accent">sealed</span> for the move</h3>
-          <p>Pressed format is deliberate — seals ingredients in, clean portable shape, no mess. Egg white, turkey, avocado mornings; savory builds for lunch.</p>
-          <p>One warm made-to-order item keeps the line moving while everything else stays grab-and-go. Warm and satisfying without slowing down the flow.</p>
+          <p>Pressed format is deliberate — seals ingredients in, clean portable shape, no mess. Egg white, turkey, avocado mornings; savory builds for lunch. One warm made-to-order item that keeps the line moving while everything else stays grab-and-go.</p>
         </div>
       </div>
     </div>
@@ -937,22 +957,43 @@
       <div class="why-col">
         <span class="pill pill-dark">Why CityCentre</span>
         <h3>Proven demand. We elevate the <span class="serif-accent">experience</span>.</h3>
-        <ul>
-          <li>Premium coffee demand at this location is well-established &mdash; the category has consistently performed here</li>
-          <li>CityCentre&rsquo;s tenant mix has no specialty caf&eacute; offering quality-forward coffee paired with health-conscious food</li>
-          <li>The wellness ecosystem &mdash; Lifetime Fitness, Beyond Yoga, Lululemon, Nike, pilates studios, run clubs &mdash; creates daily demand for clean nourishment with nowhere to find it</li>
-          <li>The Collective fills the white space between casual chain coffee and full-service dining</li>
-        </ul>
+        <div class="why-stats">
+          <div class="why-stat">
+            <div class="stat-number">Wellness</div>
+            <div class="stat-label">Lifetime, Nike, Lululemon, Beyond Yoga ecosystem</div>
+          </div>
+          <div class="why-stat">
+            <div class="stat-number">Mixed-use</div>
+            <div class="stat-label">Offices, residences, and retail in one district</div>
+          </div>
+          <div class="why-stat">
+            <div class="stat-number">Grab & go</div>
+            <div class="stat-label">Intentional packaging built for the on-the-move lifestyle</div>
+          </div>
+        </div>
+        <div class="why-body">
+          <p>CityCentre already attracts health-conscious, active professionals. The Collective gives them a home base &mdash; quality coffee and clean nourishment designed for the pace of this community.</p>
+        </div>
       </div>
       <div class="why-col">
-        <h3>CityCentre's community is <span class="serif-accent">our</span> community.</h3>
-        <ul>
-          <li>Same demographic as Lululemon, Alo, Beyond Yoga, Nike, and Lifetime Fitness</li>
-          <li>Health-conscious, active, affluent professionals &mdash; the exact customer who seeks out specialty coffee</li>
-          <li>Remote workers seeking a "third place" between home and office</li>
-          <li>After-dinner dessert + coffee crowd currently underserved in the tenant mix</li>
-          <li>4.6M annual visitors, 247K daytime population, 2nd highest-earning zip code in Houston</li>
-        </ul>
+        <h3>CityCentre&rsquo;s community is <span class="serif-accent">our</span> community.</h3>
+        <div class="why-stats">
+          <div class="why-stat">
+            <div class="stat-number">Nourishment</div>
+            <div class="stat-label">Quality coffee paired with health-conscious food</div>
+          </div>
+          <div class="why-stat">
+            <div class="stat-number">Third place</div>
+            <div class="stat-label">A gathering space between home and office</div>
+          </div>
+          <div class="why-stat">
+            <div class="stat-number">Anchor</div>
+            <div class="stat-label">Run clubs, wellness events, seasonal programming</div>
+          </div>
+        </div>
+        <div class="why-body">
+          <p>Same customer, same values &mdash; we add a daily ritual to the CityCentre lifestyle.</p>
+        </div>
       </div>
     </div>
   </section>
